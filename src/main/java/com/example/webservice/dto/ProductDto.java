@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @Data
 public class ProductDto {
-    private String id; // Đổi từ Long sang String
+    private Long id;
 
     @NotBlank
     private String code;

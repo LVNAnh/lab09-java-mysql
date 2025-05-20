@@ -11,6 +11,7 @@ import com.example.webservice.repository.OrderRepository;
 import com.example.webservice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,11 +35,12 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public Order getOrderById(String id) {
+    public Order getOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
     }
 
+    @Transactional
     public Order createOrder(OrderDto orderDto) {
         User currentUser = userService.getCurrentUser();
 
@@ -60,7 +62,7 @@ public class OrderService {
                             "Product not found with id: " + itemDto.getProductId()));
 
             OrderItem orderItem = new OrderItem();
-            orderItem.setId(UUID.randomUUID().toString()); // Generate ID for MongoDB
+            orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(itemDto.getQuantity());
             orderItem.setPrice(product.getPrice());
@@ -75,7 +77,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order updateOrder(String id, OrderDto orderDto) {
+    @Transactional
+    public Order updateOrder(Long id, OrderDto orderDto) {
         Order order = getOrderById(id);
 
         // Clear existing items
@@ -93,7 +96,7 @@ public class OrderService {
                             "Product not found with id: " + itemDto.getProductId()));
 
             OrderItem orderItem = new OrderItem();
-            orderItem.setId(UUID.randomUUID().toString()); // Generate ID for MongoDB
+            orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(itemDto.getQuantity());
             orderItem.setPrice(product.getPrice());
@@ -107,7 +110,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public void deleteOrder(String id) {
+    public void deleteOrder(Long id) {
         Order order = getOrderById(id);
         orderRepository.delete(order);
     }

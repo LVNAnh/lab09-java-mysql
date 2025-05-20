@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class OrderDto {
-    private String id; // Đổi từ Long sang String
+    private Long id;
     private String orderNumber;
     private BigDecimal totalPrice;
     private LocalDateTime createdAt;
@@ -19,7 +19,7 @@ public class OrderDto {
 
     @Data
     public static class OrderItemDto {
-        private String productId; // Đổi từ Long sang String
+        private Long productId;
         private int quantity;
     }
 }
